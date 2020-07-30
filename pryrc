@@ -16,6 +16,7 @@ begin
     indent:-2,
   }
   AwesomePrint.pry!
+  puts 'AwesomePrint Loaded'
 rescue LoadError => err
   puts 'no awesome_print :('
 end

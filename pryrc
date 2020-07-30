@@ -53,4 +53,10 @@ if ENV['RAILS_ENV'] || defined?(Rails)
   color = Rails.env =~ /production/ ? red : blue 
   Pry.config.prompt_name = "#{yellow}#{File.basename Rails.root}#{default} - #{color}#{Rails.env}#{default}"
 end
- 
+
+
+if defined?(GraphQL)
+  def graphql_id(object)
+    GraphQL::Schema::UniqueWithinType.encode(object.class.to_s, object.id)
+  end
+end

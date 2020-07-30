@@ -21,6 +21,13 @@ rescue LoadError => err
   puts 'no awesome_print :('
 end
 
+begin
+  require 'active_support/all'
+  puts 'ActiveSupport Loaded'
+rescue LoadError => err
+  puts 'No Active Support'
+end
+
 if ENV['RAILS_ENV'] || defined?(Rails)
   # Some people soft-link this file and the railsrc file from ~/.*rc, others
   # load this file specifically into their own ~/.irbrc

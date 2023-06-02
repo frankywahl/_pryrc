@@ -37,7 +37,7 @@ if ENV['RAILS_ENV'] || defined?(Rails)
     # puts "File.dirname #{File.dirname(__FILE__)}"
     # puts "Railsrc: #{railsrc}"
     # railsrc_path = File.dirname(__FILE__) + railsrc
-    load railsrc if File.exists?(railsrc)
+    load railsrc if File.exist?(railsrc)
   end
 
   # ActiveRecord SQL to be printed to screen

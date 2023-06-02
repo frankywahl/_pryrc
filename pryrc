@@ -9,24 +9,57 @@ if (defined? PryByebug) || (defined? PryDebugger)
   Pry.commands.alias_command('n', 'next') if Pry.commands.keys.include?("next")
 end
 
-begin
-  require 'awesome_print' 
-  Pry.config.print = proc { |output, value| output.puts value.ai }
+module Franky
+  class << self
+    def autoload(name)
+      if try_with_require(name) || try_with_gem_which(name) || try_with_find(name) 
+        puts "#{name} Loaded :)"
+      else
+        raise LoadError
+      end
+      yield if block_given?
+    rescue LoadError => err
+      puts "no #{name} :("
+    end
+
+    private
+
+    def try_with_require(name)
+      require name
+    rescue LoadError => err
+      false
+    end
+
+    def try_with_gem_which(name)
+      path = `gem which #{name} 2>/dev/null`.strip
+      return false if path.nil?
+      $LOAD_PATH << File.dirname(path)
+      require path
+      true
+    rescue LoadError => err
+      false
+    end
+
+    def try_with_find(name)
+      path = `find ~/.rbenv/versions/#{RUBY_VERSION}/ -iname "#{name}.rb"`.strip
+      return false if path.nil?
+      $LOAD_PATH << File.dirname(path)
+      require path
+      true
+    rescue LoadError => err
+      false
+    end
+  end
+end
+
+Franky.autoload("awesome_print") do
   AwesomePrint.defaults = {
     indent:-2,
   }
+  Pry.config.print = proc { |output, value| output.puts value.ai }
   AwesomePrint.pry!
-  puts 'AwesomePrint Loaded'
-rescue LoadError => err
-  puts 'no awesome_print :('
 end
-
-begin
-  require 'active_support/all'
-  puts 'ActiveSupport Loaded'
-rescue LoadError => err
-  puts 'No Active Support'
-end
+Franky.autoload("active_support/all")
 
 if ENV['RAILS_ENV'] || defined?(Rails)
   # Some people soft-link this file and the railsrc file from ~/.*rc, others
@@ -53,4 +86,4 @@ if ENV['RAILS_ENV'] || defined?(Rails)
   color = Rails.env =~ /production/ ? red : blue 
   Pry.config.prompt_name = "#{yellow}#{File.basename Rails.root}#{default} - #{color}#{Rails.env}#{default}"
 end
- 
+

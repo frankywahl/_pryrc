@@ -4,9 +4,9 @@ Pry.commands.alias_command('vi', 'edit')
 Pry.commands.alias_command('vim', 'edit')
 
 if (defined? PryByebug) || (defined? PryDebugger)
-  Pry.commands.alias_command('c', 'continue')
-  Pry.commands.alias_command('s', 'step')
-  Pry.commands.alias_command('n', 'next')
+  Pry.commands.alias_command('c', 'continue') if Pry.commands.keys.include?("continue")
+  Pry.commands.alias_command('s', 'step') if Pry.commands.keys.include?("step")
+  Pry.commands.alias_command('n', 'next') if Pry.commands.keys.include?("next")
 end
 
 begin
